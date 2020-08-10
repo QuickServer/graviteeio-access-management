@@ -107,7 +107,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Maybe<User> findById(String id) {
-        return userService.findById(id);
+        return userService.findById(id)
+                .map(user -> {
+                    // internal status value is dynamic and based on the current user identity provider
+                    user.setInternal(identityProviderManager.userProviderExists(user.getSource()));
+                    return user;
+                });
     }
 
     @Override
